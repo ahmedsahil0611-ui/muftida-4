@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap">
+<title>Love Project (preview)</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#ffe3ec;--card:#fff;--text:#7a1f3d;--accent:#ff4d7d}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#2a0f1b;--card:#3a1626;--text:#ffd6e3;--accent:#ff6b93}}
+:root[data-theme="dark"]{--bg:#2a0f1b;--card:#3a1626;--text:#ffd6e3;--accent:#ff6b93}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--text);font-family:Quicksand,system-ui,sans-serif;display:flex;align-items:center;justify-content:center;text-align:center}
+.container{background:var(--card);border-radius:24px;padding:28px 22px;width:min(88vw,360px);box-shadow:0 12px 40px #ff4d7d33}
+.result-container{display:none}
+.ph{height:200px;border-radius:16px;background:linear-gradient(135deg,#ffc2d6,#ffe3ec);display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:14px;color:#7a1f3d}
+.ph b{font-size:4rem;line-height:1}.ph small{margin-top:8px;opacity:.7;font-size:.75rem}
+h2{font-size:1.5rem;margin:10px 0 18px}
+.btn{font:inherit;font-weight:600;border:0;border-radius:999px;padding:12px 30px;margin:6px;cursor:pointer;font-size:1.05rem}
+.yes-btn{background:var(--accent);color:#fff;transition:transform .2s}
+.no-btn{background:#e5e5e5;color:#555;transition:left .3s,top .3s}
+.cssload-main{position:fixed;inset:0;background:var(--bg);z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s}
+.cssload-main.gone{opacity:0;pointer-events:none}
+.cssload-heart{position:relative;width:60px;height:60px;animation:beat 1s ease-in-out infinite}
+.cssload-heart span{position:absolute;background:var(--accent)}
+.cssload-square{inset:0;transform:rotate(45deg)}
+.cssload-heartL,.cssload-heartR{width:60px;height:60px;border-radius:50%;top:-21px}
+.cssload-heartL{left:-21px}.cssload-heartR{left:21px}
+.cssload-shadow{width:60px;height:8px;border-radius:50%;background:#0003;margin-top:50px;animation:sh 1s ease-in-out infinite}
+@keyframes beat{50%{transform:scale(1.25)}}
+@keyframes sh{50%{transform:scale(1.25);opacity:.5}}
+</style>
+</head>
+<body>
+<div class="question-container container">
+  <div class="ph local-gif"><b>🥺</b></div>
+  <h2 class="question"></h2>
+  <div class="button-container">
+    <button class="yes-btn btn js-yes-btn">Yes</button>
+    <button class="no-btn btn js-no-btn">No</button>
+  </div>
+</div>
+<div class="result-container container">
+  <div class="ph gif-result"><b>😍</b></div>
+  <h2>I knew it😍!</h2>
+  <button class="btn yes-btn js-again-btn">Again 🔁</button>
+</div>
+<div class="cssload-main" id="loader">
+  <div class="cssload-heart"><span class="cssload-heartL"></span><span class="cssload-heartR"></span><span class="cssload-square"></span></div>
+  <div class="cssload-shadow"></div>
+</div>
+<script>
+document.querySelector(".question").textContent="Do you love me? 💌";
+setTimeout(()=>document.getElementById("loader").classList.add("gone"),2200);
+const yes=document.querySelector(".js-yes-btn"),no=document.querySelector(".js-no-btn");
+const jokes=["Nope 😜","Pakad ke dikhao 😂","Itni jaldi nahi 🤭","Yahan hoon 🙈","Miss ho gaya 😝","Haha, nahi milega 🏃","Yes dabao na 🥺"];
+let scale=1,n=0,moved=false;
+function dodge(e){
+  if(e&&e.cancelable)e.preventDefault();
+  if(!moved){const r=no.getBoundingClientRect();no.style.position="fixed";no.style.left=r.left+"px";no.style.top=r.top+"px";no.style.zIndex=5;moved=true;void no.offsetWidth;}
+  const w=no.offsetWidth,h=no.offsetHeight;
+  no.style.left=(10+Math.random()*(window.innerWidth-w-20))+"px";
+  no.style.top=(10+Math.random()*(window.innerHeight-h-20))+"px";
+  no.textContent=jokes[n++%jokes.length];
+  scale=Math.min(scale+.08,1.6);yes.style.transform="scale("+scale+")";
+}
+["pointerenter","touchstart","click"].forEach(ev=>no.addEventListener(ev,dodge,{passive:false}));
+yes.addEventListener("click",()=>{
+  document.querySelector(".question-container").style.display="none";
+  document.querySelector(".result-container").style.display="block";
+});
+document.querySelector(".js-again-btn").addEventListener("click",()=>{
+  document.querySelector(".result-container").style.display="";
+  document.querySelector(".question-container").style.display="";
+  no.style.position="";no.style.left="";no.style.top="";no.style.zIndex="";no.textContent="No";
+  moved=false;n=0;scale=1;yes.style.transform="";
+});
+</script>
+</body>
+</html>
